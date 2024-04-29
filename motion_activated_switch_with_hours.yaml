@@ -1,7 +1,7 @@
 blueprint:
-  name: Motion-activated Switch and or Light with Elevation
+  name: Motion-activated Switch and or switch with Elevation
   domain: automation
-  source_url: https://community.home-assistant.io/t/motion-activate-light-or-switch-based-on-daylight-sun-elevation/265010
+  source_url: https://community.home-assistant.io/t/motion-activate-switch-or-switch-based-on-dayswitch-sun-elevation/265010
   input:
     motion_entity:
       name: Motion Sensor
@@ -10,7 +10,7 @@ blueprint:
           domain: binary_sensor
           device_class: motion
           multiple: false
-    light_target:
+    switch_target:
       name: Switch
       selector:
         target:
@@ -18,7 +18,7 @@ blueprint:
             domain: switch
     no_motion_wait:
       name: Wait time
-      description: Time to leave the light on after last motion is detected.
+      description: Time to leave the switch on after last motion is detected.
       default: 120
       selector:
         number:
@@ -49,13 +49,13 @@ variables:
 condition:
 - '{{ state_attr(''sun.sun'',''elevation'') <= (below_elevation | float)}}'
 action:
-  - service: light.turn_on
-    target: !input light_target
+  - service: switch.turn_on
+    target: !input switch_target
   - wait_for_trigger:
       platform: state
       entity_id: !input motion_entity
       from: "on"
       to: "off"
   - delay: !input no_motion_wait
-  - service: light.turn_off
-    target: !input light_target
+  - service: switch.turn_off
+    target: !input switch_target
