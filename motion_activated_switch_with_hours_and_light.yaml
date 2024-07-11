@@ -55,9 +55,12 @@ variables:
   below_elevation: !input below_elevation
   light_target: !input light_target
 condition:
-- '{{ state_attr(''sun.sun'',''elevation'') <= (below_elevation | float)}}'
-condition:
-- '{{ not is_state(light_target.entity_id, "on") }}'
+  - condition: template
+    value_template: >
+      {{ state_attr('sun.sun','elevation') <= (below_elevation | float) }}
+  - condition: template
+    value_template: >
+      {{ not is_state(light_target.entity_id, 'on') }}
 action:
   - service: switch.turn_on
     target: !input switch_target
