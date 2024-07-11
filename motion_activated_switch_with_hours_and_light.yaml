@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-activated Switch and or switch with Elevation
+  name: Motion-activated Switch and or switch with Elevation + check on light
   domain: automation
   source_url: https://community.home-assistant.io/t/motion-activate-switch-or-switch-based-on-dayswitch-sun-elevation/265010
   input:
@@ -53,9 +53,11 @@ trigger:
   to: 'on'
 variables:
   below_elevation: !input below_elevation
+  light_target: !input light_target
 condition:
 - '{{ state_attr(''sun.sun'',''elevation'') <= (below_elevation | float)}}'
-  '{{ not is_state("light.entrada", "on") }}'
+condition:
+- '{{ not is_state(light_target.entity_id, "on") }}'
 action:
   - service: switch.turn_on
     target: !input switch_target
